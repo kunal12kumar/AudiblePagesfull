@@ -4,6 +4,7 @@ import {spawn} from 'child_process';
 import fs from 'fs';
 
 
+
 // function to upload the pdf and save in to the database
 export const save=async (req,res)=>{
 
@@ -63,12 +64,14 @@ export const saveaudiofileindatabase=async(req,res)=>{
 
     try{
         const Filename=req.file.filename
+        const path=req.file.path;
         console.log(Filename);
         console.log(req.file);
+        console.log(path);
         const entry = await saveaudiofile.create({
             Audio: Filename
         })
-        return res.status(200).json({ message: "File saved successfully",entry, success: "true" });
+        return res.status(200).json({ message: "File saved successfully",entry, success: "true" ,path:path });
 
 
     }catch(err){

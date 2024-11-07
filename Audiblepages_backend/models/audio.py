@@ -6,11 +6,14 @@ from datetime import datetime
 import os
 import requests
 from dotenv import load_dotenv
+
 # this is to merge all segment of audio
 # from pydub import AudioSegment
 # Accessing the AWS credentials
 # aws_access_key_id = os.getenv('AWS_ACCESS_KEY_ID')
 # aws_secret_access_key = os.getenv('AWS_SECRET_ACCESS_KEY')
+
+
 
 load_dotenv()
 
@@ -19,7 +22,7 @@ load_dotenv()
 def generate_voice(text, voice_id='Aditi', output_format='mp3', folder_path='Audio_Files'):
     # Initialize a session using Amazon Polly
     polly = boto3.Session(
-        # Replace with your secret key
+          # Replace with your secret key
         region_name='ap-south-1'  # Change the region as needed
     ).client('polly')
 
@@ -83,6 +86,7 @@ def generate_voice(text, voice_id='Aditi', output_format='mp3', folder_path='Aud
         if file_name:
             server_url = "http://localhost:8091/api/rpdf/saveaudio"  # Replace with your server's upload endpoint
             upload_audio_to_server(file_name, server_url)
+           
 
 
 
@@ -107,9 +111,14 @@ def upload_audio_to_server(file_name, server_url):
         response = requests.post(server_url, files=files)
 
     if response.status_code == 200:
-        print("File uploaded successfully.")
+        print("File uploaded successuffly.")
+        file_path=response.json().get('path')
+        print(file_path)
+        return file_path
+        
     else:
         print(f"Failed to upload file. Status code: {response.status_code}")
+        
         
         
         

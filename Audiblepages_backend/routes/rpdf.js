@@ -12,13 +12,13 @@ const storage = multer.diskStorage({
   filename: (req, file, cb) => {
     const date = new Date();
     const formattedDate = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
-    cb(null, `${formattedDate}-${file.originalname}`);
+    cb(null, `${file.originalname}`);
 }
 
 });
 
 
-//creating diff path for the audio files
+// creating diff path for the audio files
 
 const storage1 = multer.diskStorage({
   destination: (req, file, cb) => {

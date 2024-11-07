@@ -13,8 +13,16 @@ export default function Fileupload() {
 
     // storing the formdata for extractchange
 
-    const [saveformdata,setsaveformdata]=useState('')
+    const [saveformdata, setsaveformdata] = useState('')
     // functions to save tiltle
+
+    // To show the audio file created
+
+    const [audiofile, setaudiofile] = useState('');
+
+    // to show download button if audiofile come
+
+    const [showbutton, setshowbutton] = useState(true);
 
     const [Style, setStyle] = useState(false);
 
@@ -53,7 +61,7 @@ export default function Fileupload() {
             if (result.status === 200) {
                 toast.success("Uploaded Successfully")
             }
-        } catch(err) {
+        } catch (err) {
             console.log(err)
             toast.error("Uploading Failed");
 
@@ -92,8 +100,12 @@ export default function Fileupload() {
             if (response.status === 200) {
                 console.table(response);
                 console.log(response.data.text);
+                console.log(response.data.file__path)
                 toast.success("Extraction Successful")
             }
+
+
+            
 
         } catch (err) {
 
@@ -103,8 +115,44 @@ export default function Fileupload() {
         }
 
 
+        // function to download all the audio file
+
+        
 
 
+
+
+    }
+
+
+    const AudioDownloader = ({ filename }) => {
+        const [isLoading, setIsLoading] = useState(false);
+      
+        const downloadAudio = async () => {
+          setIsLoading(true);
+          try {
+            // Replace 'your-backend-url' with your backend's base URL
+            const response = await axios.get(`http://your-backend-url/api/audio/${filename}`, {
+              responseType: 'blob', // Important for binary data like audio
+            });
+            
+            // Create a URL for the file blob and trigger download
+            const url = window.URL.createObjectURL(new Blob([response.data]));
+            const link = document.createElement('a');
+            link.href = url;
+            link.setAttribute('download', filename); // or specify any filename
+            document.body.appendChild(link);
+            link.click();
+            
+            // Clean up
+            link.remove();
+            window.URL.revokeObjectURL(url);
+          } catch (error) {
+            console.error('Failed to download audio file', error);
+          } finally {
+            setIsLoading(false);
+          }
+        };
     }
 
 
@@ -136,8 +184,21 @@ export default function Fileupload() {
 
                 {/* this will show the pdf we will upload */}
                 <div className="w-[40%] h-[80%] rounded-lg bg-[#F2F2F2]">
-                    <div className='flex flex-row justify-center'>
-                        <h1 className="m-4 text-2xl font-sans rounded-lg">Uploaded file</h1>
+                    <div className='flex flex-col justify-center items-center'>
+                        <h1 className="m-4 text-2xl font-sans rounded-lg">Converted Audio file </h1>
+                        <div className='m-7 w-[90%] h-[80%]'>
+                            {
+                                showbutton ? <div className='flex flex-col justify-center items-center gap-6'>
+                                    <div className='w-[70%] mx-auto h-[60px] rounded-lg border-dashed border-[2px] border-[#2D3E73] bg-[#f0ecec] text-center p-2 '>
+                                        {audiofile}
+                                    </div>
+
+                                    <button className='w-[70%] mx-auto h-[40px] rounded-lg border-dashed border-[2px] border-[#2D3E73] text-center p-2 bg-[#05F2C7]'>Download</button>
+                                </div> : <h1 className='w-[70%] mx-auto h-[40px] rounded-lg border-dashed border-[2px] border-[#2D3E73] text-center p-2 bg-[#05F2C7]'>Pdf conversion is in process......</h1>
+
+                            }
+
+                        </div>
 
                     </div>
                 </div>
@@ -157,3 +218,17 @@ export default function Fileupload() {
 
     )
 }
+
+
+
+// export function ShowAudioFile(){
+//     return(
+//         <div>
+//             <div className='w-[70%] mx-auto h-[60px] rounded-lg border-dashed border-[2px] border-[#2D3E73] text-center p-2 '>
+//                 `${audiofile}`
+//             </div>
+
+//             <button className='w-[70%] mx-auto h-[40px] rounded-lg border-dashed border-[2px] border-[#2D3E73] text-center p-2 bg-[#05F2C7]'>Download</button>
+//         </div>
+//     )
+// }
